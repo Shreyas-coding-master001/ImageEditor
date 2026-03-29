@@ -1,0 +1,157 @@
+.top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.top h2{
+    font-size: 2rem;
+}
+
+.top .AllButton{
+    width: 30%;
+    display: flex;
+    justify-content: end;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.top .AllButton button{
+    padding: 0.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    border: none;
+}
+.top .AllButton label{
+    padding: 0.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.top .AllButton .auth-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.top .AllButton button {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.top .AllButton button:hover {
+  transform: translateY(-1px);
+}
+
+.top .AllButton button:active{
+  scale: 0.95;
+}
+
+.top .AllButton label:nth-child(1){
+  background-color: crimson;
+  color: whitesmoke;
+}
+
+.file-preview {
+  .preview-img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+  }
+}
+
+.bottom{
+  padding: 1rem;
+
+  section{ 
+
+    .bottom-top{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      
+      h4{
+        font-size: 1rem;
+        color: #8e8e8e;
+      }
+    }
+    
+
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+
+      .image-card{
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+
+        &:hover {
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          transform: translateY(-2px);
+        }
+
+        img{
+          width: 100%;
+          height: 150px;
+          object-fit: cover;
+          border-radius: 4px;
+          margin-bottom: 0.5rem;
+        }
+
+        p{
+          margin: 0.5rem 0;
+          font-size: 0.9rem;
+          color: #555;
+          font-weight: 500;
+        }
+
+        .delete-btn {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #ff4757;
+          color: white;
+          border: none;
+          border-radius: 50px;
+          padding: 0.3rem 0.6rem;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: #ff3838;
+            transform: scale(1.1);
+          }
+        }
+
+        &:hover .delete-btn {
+          opacity: 1;
+        }
+      }
+    }
+
+  }
+  
+  
+}
