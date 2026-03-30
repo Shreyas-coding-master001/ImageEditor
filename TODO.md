@@ -1,9 +1,13 @@
-# Image Upload handlePost Implementation
+# Fix Image Save Error TODO
 
-## Steps:
-- [x] Step 1: Update Frontend/src/pages/Home.jsx and Editor.jsx per feedback.
-  - List images in cards after upload (no auto-navigate).
-  - Click image → navigate to Editor with image state.
-  - Editor shows selected image.
-- [x] Complete task.
+## [x] 1. Start backend server (done)
 
+## [x] 3. Fix frontend ID
+
+## [x] 4. Fix backend controller (renamed image.controllers.js)
+
+## [ ] 2. Fix MongoDB: type Backend\\.env , add MONGO_URI if missing
+
+## [ ] 5. Restart server: taskkill /f /im node.exe && node Backend/server.js
+
+## [ ] 6. Test: Login, upload image, edit/save (no 500/undefined)

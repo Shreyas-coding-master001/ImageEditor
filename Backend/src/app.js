@@ -19,7 +19,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 
-// All Routes here you can know where api's are 👍👍  
+// All Routes here you can know where api's are going👍👍  
 app.use("/api/auth", authRoute);
 app.use("/api/imageEdit", imageRoute);
 
