@@ -112,35 +112,41 @@ const Home = (props) => {
 
   return (
     <div className='mainHome'>
-      <div className="top">
-        <h2>Welcome To Image Editor</h2>
-        <div className="AllButton">
-          <label htmlFor="image-choose">
-            Choose Image
-            <input
-              ref={fileInputRef}
-              type="file" 
-              id='image-choose' 
-              name='image'
-              accept='image/*' 
-              hidden 
-              onChange={handleFileChange}
-            />
-          </label>
-          {selectedFile && (
-            <div className="file-preview">
-              <img src={URL.createObjectURL(selectedFile)} alt="Preview" className="preview-img" />
-              <p>{selectedFile.name}</p>
-              <button onClick={handleUpload} disabled={uploading}>
-                {uploading ? 'Uploading...' : 'Upload Image'}
-              </button>
+        <div className="top">
+          <h2>Welcome To Image Editor</h2>
+          {userData && Object.keys(userData).length > 0 && (
+            <div className="user-info" style={{marginLeft: 'auto', fontWeight: 'bold'}}>
+              Welcome, {userData.email}!
             </div>
           )}
-          <div className="auth-buttons">
-            <button onClick={() => navigate('/login')}>Login</button>
+          <div className="AllButton">
+            <label htmlFor="image-choose">
+              Choose Image
+              <input
+                ref={fileInputRef}
+                type="file" 
+                id='image-choose' 
+                name='image'
+                accept='image/*' 
+                hidden 
+                onChange={handleFileChange}
+              />
+            </label>
+            {selectedFile && (
+              <div className="file-preview">
+                <img src={URL.createObjectURL(selectedFile)} alt="Preview" className="preview-img" />
+                <p>{selectedFile.name}</p>
+                <button onClick={handleUpload} disabled={uploading}>
+                  {uploading ? 'Uploading...' : 'Upload Image'}
+                </button>
+              </div>
+            )}
+            <div className="auth-buttons">
+              {!userData && <button onClick={() => navigate('/login')}>Login</button>}
+              {userData && <button onClick={() => {setuserData({}); navigate('/login');}}>Logout</button>}
+            </div>
           </div>
         </div>
-      </div>
       <br /><hr />
       
       <div className="bottom">
@@ -151,16 +157,33 @@ const Home = (props) => {
               <h4>Limit : ({imageData.length}/{MAX_IMAGES})</h4>
             </div>
             <div className="grid">
-              {imageData.map((image) => (
-                <div key={image._id} className="image-card">
-                  <img src={image.url} alt="Uploaded" onClick={() => handleImageClick(image)} />
-                  <p>{image.public_id || 'Uploaded Image'}</p>
-                  <button className="delete-btn" onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(image._id);
-                  }}>Delete</button>
-                </div>
-              ))}
+                {imageData.map((image) => {
+                  // Dynamic src with transformation if available
+                  let imgSrc = image.url;
+                  if (image.transformation) {
+                    // Cloudinary transformation URL: resize, apply effects
+                    const base = image.url.split('/v')[0] + '/';
+                    const versionRest = image.url.split('/v')[1];
+                    const transforms = image.transformation.replace(/,/g, '/') + ',w_400,c_fill/';
+                    imgSrc = base + transforms + 'v' + versionRest;
+                  }
+                  return (
+                    <div key={image._id} className="image-card">
+                      <img 
+                        src={imgSrc} 
+                        alt="Uploaded" 
+                        onClick={() => handleImageClick(image)}
+                        style={{width: '100%', height: '200px', objectFit: 'cover'}}
+                      />
+                      <p>{image.public_id || 'Uploaded Image'}</p>
+                      <button className="delete-btn" onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(image._id);
+                      }}>Delete</button>
+                    </div>
+                  );
+                })}
+
             </div>
           </section>
         )}
