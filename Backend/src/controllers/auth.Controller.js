@@ -2,10 +2,16 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
 
-/**
- * @route Post /api/auth/register
- * @description Here login of Registering an user with hash passworded is saved in MongoDB
- */
+async function getCurrentUser(req, res) {
+  try {
+    // req.user already populated by auth middleware
+    const { password, ...userWithoutPassword } = req.user.toObject();
+    res.json({ user: userWithoutPassword });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 async function AuthControllerRegister(req, res){
     const {username, email, password, description} = req.body;
 
@@ -32,7 +38,7 @@ async function AuthControllerRegister(req, res){
 
         res.status(201).json({
             message : "User Created Successfully",
-            userCreate
+            user: userCreate
         });
         
     }catch(err){
@@ -69,7 +75,7 @@ async function AuthControllerLogin(req, res){
 
         res.cookie("token", token);
         
-        res.status(201).json({message : "User Logged in Successfully"});
+        res.status(201).json({message : "User Logged in Successfully", user: isUserExist});
     }catch(err){
         res.status(500).json({
             message : "Pakka mongoDB ya fhir bcrypt or jwt ka problem he 😭😭",
@@ -80,5 +86,6 @@ async function AuthControllerLogin(req, res){
 
 module.exports = {
     AuthControllerRegister,
-    AuthControllerLogin
-}
+    AuthControllerLogin,
+    getCurrentUser
+};
