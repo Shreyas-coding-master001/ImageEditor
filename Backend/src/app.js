@@ -23,4 +23,12 @@ app.use(cookieParser());
 app.use("/api/auth", authRoute);
 app.use("/api/imageEdit", imageRoute);
 
+app.get("/", (req, res)=>{
+    res.status(200).json({
+        message: "Le vivek Ko JSON Me Chahiye thana!!",
+        Data : "Kya Data Ase Free ME du kya",
+        Permission: "CCL ke Madam se persimsson Leke aa"
+    })
+});
+
 module.exports = app;
