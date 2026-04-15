@@ -63,16 +63,55 @@ async function imageControllerUpdateImage(req, res){
     const { id } = req.params;
     try{
         const { transformation } = req.body;
-        const image = await imageModel.findOneAndReplace(id, { transformation }, { new : true });
-        if(!image) return res.status(404).json({ message : "Image Not Found" });
-        res.status(200).json({ message : "Image Updated Successfully", image });
-    }catch(err){
-        return res.status(500).json({ message : "Failed to Update Image", err });
+        console.log(transformation);
+        
+        // ✅ Use findByIdAndUpdate instead, or pass { _id: id } as filter
+        const image = await imageModel.findByIdAndUpdate(
+            id, 
+            { transformation }, 
+            { new: true }
+        );
+
+        if(!image) return res.status(404).json({ message: "Image Not Found" });
+        res.status(200).json({ message: "Image Updated Successfully", image });
+
+    } catch(err){
+        console.log(err);
+        return res.status(500).json({ message: "Failed to Update Image", err });
+    }
+}
+
+async function imageControllerDeleteImage(req, res) {
+    try {
+        const { id } = req.params;
+        const image = await imageModel.findOne({ _id: id, user: req.user._id });
+        if (!image) {
+            return res.status(404).json({ message: "Image not found or access denied" });
+        }
+
+        // Delete from Cloudinary
+        const result = await new Promise((resolve, reject) => {
+            cloudinary.uploader.destroy(image.public_url, (error, result) => {
+                if (error) reject(error);
+                else resolve(result);
+            });
+        });
+
+        console.log("Cloudinary delete result:", result);
+
+        // Delete from DB
+        await imageModel.findByIdAndDelete(id);
+
+        res.json({ message: "Image deleted successfully from Cloudinary and DB" });
+    } catch (err) {
+        console.error("Delete error:", err);
+        res.status(500).json({ message: "Delete failed", error: err.message });
     }
 }
 
 module.exports = { 
     imageControllerUploader,
     imageControllerGetAllImages,
-    imageControllerUpdateImage
+    imageControllerUpdateImage,
+    imageControllerDeleteImage
 }

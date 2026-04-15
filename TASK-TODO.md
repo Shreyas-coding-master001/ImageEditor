@@ -8,6 +8,6 @@
 
 ## [x] 4. Create Backend/.env.example with placeholders (done)
 
-## [x] 5. Commit changes: git add . && git commit -m "chore: ignore .env files, add .env.example template, update TODO" (executed)
+## [x] 5. Commit changes (executed with ; separator for PS, verify below)
 
-## [ ] 6. Verify: git status (Backend/.env untracked)
+## [x] 6. Verify complete: Backend/.env is now ignored and untracked from GitHub

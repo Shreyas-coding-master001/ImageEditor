@@ -26,4 +26,10 @@ imageRoute.get("/getAllImages", authUser, imageController.imageControllerGetAllI
  */
 imageRoute.patch("/images/:id", authUser, imageController.imageControllerUpdateImage);
 
+/**
+ * @route delete /api/imageEdit/delete/:id
+ * @description Delete image from Cloudinary and DB
+ */
+imageRoute.delete("/delete/:id", authUser, imageController.imageControllerDeleteImage);
+
 module.exports = imageRoute;
