@@ -34,7 +34,11 @@ async function AuthControllerRegister(req, res){
         process.env.JWT_SECRET, 
         {expiresIn : "1d"});
         
-        res.cookie("token", token);
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,        // ✅ Required for HTTPS
+            sameSite: "None"     // ✅ Required for cross-origin
+        });
 
         res.status(201).json({
             message : "User Created Successfully",
@@ -73,7 +77,11 @@ async function AuthControllerLogin(req, res){
             process.env.JWT_SECRET,
         {expiresIn : "1d"});
 
-        res.cookie("token", token);
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,        // ✅ Required for HTTPS
+            sameSite: "None"     // ✅ Required for cross-origin
+        });
         
         res.status(201).json({message : "User Logged in Successfully", user: isUserExist});
     }catch(err){
