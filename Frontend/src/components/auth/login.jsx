@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import axios from "axios";
+import BASE_URL from '../../config/api.js';
 import '../style/Login.scss';
 import { ImageContextData } from '../../context/ImageContext.jsx';
 import { useNavigate } from 'react-router';
@@ -20,7 +21,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", {email, password},
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, {email, password},
         {
           withCredentials : true
         }

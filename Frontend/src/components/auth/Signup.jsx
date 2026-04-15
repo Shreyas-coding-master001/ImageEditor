@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import '../style/Signup.scss';
 import { ImageContextData } from '../../context/ImageContext.jsx';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import axios from 'axios';
+import BASE_URL from '../../config/api.js';
 
 const Signup = ({setisLogin}) => {
   const [email, setEmail] = useState('');
@@ -27,7 +28,7 @@ const Signup = ({setisLogin}) => {
     setLoading(true);
     
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/register", {
+      const response = await axios.post(`${BASE_URL}/api/auth/register`, {
         username, email, password
       },{
         withCredentials : true
@@ -99,7 +100,7 @@ const Signup = ({setisLogin}) => {
           </button>
         </form>
         <div className="link">
-<Link to='/login'>Login here</Link>
+        <Link to='/login'>Login here</Link>
         </div>
       </div>
     </div>

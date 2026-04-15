@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import "../style/Home.scss";
 import {ImageContextData} from "../context/ImageContext.jsx";
 import Signup from '../components/auth/Signup.jsx';
+import BASE_URL from '../config/api.js';
 
 const Home = (props) => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const Home = (props) => {
     setError('');
 
     try {
-      const response = await fetch("http://localhost:3000/api/imageEdit/uploadImage", {
+      const response = await fetch(`${BASE_URL}/api/imageEdit/uploadImage`, {
         method: "POST",
         body: formData,
         credentials: "include", // For auth cookies
@@ -92,7 +93,7 @@ const Home = (props) => {
     if (!confirm('Are you sure you want to delete this image?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/imageEdit/delete/${imageId}`, {
+      const response = await fetch(`${BASE_URL}/api/imageEdit/delete/${imageId}`, {
         method: "DELETE",
         credentials: "include",
       });

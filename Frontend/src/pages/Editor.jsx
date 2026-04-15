@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { ImageContextData } from '../context/ImageContext.jsx';
 import "../style/Editor.scss";
 import axios from 'axios';
+import BASE_URL from '../config/api.js';
 
 const Editor = () => {
   const location = useLocation();
@@ -106,7 +107,7 @@ const Editor = () => {
 
   const handleSave = async () => {
     try {
-      const updatedImage = await axios.patch(`http://localhost:3000/api/imageEdit/images/${selectedImage._id}`, {
+      const updatedImage = await axios.patch(`${BASE_URL}/api/imageEdit/images/${selectedImage._id}`, {
         transformation
       }, { withCredentials: true });
       
