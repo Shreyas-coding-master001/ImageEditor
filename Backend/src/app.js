@@ -15,7 +15,10 @@ app.use(express.json());
 // important for cookies!!
 app.use(cors({
     credentials: true,
-    origin : "http://localhost:5173"
+    origin : [
+        "http://localhost:5173",
+        "https://image-editor-alpha-ochre.vercel.app"
+    ]
 }));
 app.use(cookieParser());
 
