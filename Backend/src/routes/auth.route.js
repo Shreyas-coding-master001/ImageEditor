@@ -1,5 +1,6 @@
 const express = require("express");
 const authController = require("../controllers/auth.Controller");
+const authMiddleware = require("../middleware/auth.middleware");
 const authRoute = express.Router();
 
 /**
@@ -8,6 +9,12 @@ const authRoute = express.Router();
  */
 authRoute.post("/register", authController.AuthControllerRegister);
 
-authRoute.post("/login", authController.AuthControllerLogin)
+authRoute.post("/login", authController.AuthControllerLogin);
+
+/**
+ * @route GET /api/auth/me
+ * @description Get current logged in user
+ */
+authRoute.get("/me", authMiddleware, authController.getCurrentUser);
 
 module.exports = authRoute;

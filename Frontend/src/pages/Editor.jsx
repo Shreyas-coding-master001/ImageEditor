@@ -36,12 +36,41 @@ const Editor = () => {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
     };
-    img.src = selectedImage.url;
+    let previewSrc = selectedImage.url;
+    if (selectedImage.transformation) {
+      const base = selectedImage.url.split('/v')[0] + '/';
+      const versionRest = selectedImage.url.split('/v')[1];
+      const transforms = selectedImage.transformation.replace(/,/g, '/') + ',w_600,c_limit/';
+      previewSrc = base + transforms + 'v' + versionRest;
+    }
+    img.src = previewSrc;
   }, [selectedImage]);
 
   useEffect(() => {
     updateCanvas();
   }, [updateCanvas]);
+
+// Parse saved transformation to initialize sliders
+  useEffect(() => {
+    if (selectedImage?.transformation) {
+      const matches = selectedImage.transformation.match(/e_([a-z_]+):?(-?\\d+)?/g) || [];
+      const effects = {};
+      matches.forEach(effect => {
+        const nameMatch = effect.match(/e_([a-z_]+)/);
+        const valMatch = effect.match(/:(-?\\d+)/);
+        if (nameMatch) {
+          const name = nameMatch[1];
+          const value = valMatch ? parseInt(valMatch[1]) : 100;
+          effects[name] = value;
+        }
+      });
+      setBrightness(effects.brightness || 0);
+      setContrast(effects.contrast || 0);
+      setSaturation(effects.saturation || 0);
+      setGrayscale(effects.grayscale ? 100 : 0);
+      setSepia(effects.sepia ? 100 : 0);
+    }
+  }, [selectedImage]);
 
   // Update transformation string for Cloudinary
   useEffect(() => {

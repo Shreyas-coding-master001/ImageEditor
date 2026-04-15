@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import '../style/Signup.scss';
 import { ImageContextData } from '../../context/ImageContext.jsx';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Signup = ({setisLogin}) => {
@@ -99,7 +99,7 @@ const Signup = ({setisLogin}) => {
           </button>
         </form>
         <div className="link">
-          <p>Already have an account? <Link to={'login'}>Login here</Link></p>
+<Link to='/login'>Login here</Link>
         </div>
       </div>
     </div>

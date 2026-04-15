@@ -28,8 +28,8 @@ imageRoute.patch("/images/:id", authUser, imageController.imageControllerUpdateI
 
 /**
  * @route delete /api/imageEdit/delete/:id
- * @description Delete image from Cloudinary and DB
+ * @description Delete specific image (Cloudinary + DB), user auth required
  */
-imageRoute.delete("/delete/:id", authUser, imageController.imageControllerDeleteImage);
+imageRoute.delete("/delete/:id", authUser, imageController.deleteImage);
 
 module.exports = imageRoute;

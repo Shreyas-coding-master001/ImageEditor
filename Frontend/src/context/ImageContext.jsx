@@ -5,25 +5,37 @@ import { useState, useEffect } from 'react';
 export const ImageContextData = createContext();
 
 const ImageContext = (props) => {
-
     const [imageData, setimageData] = useState([]);
-    const [userData, setuserData] = useState({});
+    const [userData, setuserData] = useState(null);
 
+    // Fetch current user on app load
+    useEffect(() => {
+      const fetchCurrentUser = async () => {
+        try {
+          const response = await axios.get("http://localhost:3000/api/auth/me", { withCredentials: true });
+          setuserData(response.data.user);
+        } catch (err) {
+          setuserData(null);
+        }
+      };
+      fetchCurrentUser();
+    }, []);
+
+    // Fetch images when user changes
     useEffect(() => {
       async function fetchImages() {
-        if(Object.keys(userData).length !== 0) {
-          try{
+        if (userData) {
+          try {
             const Allimages = await axios.get("http://localhost:3000/api/imageEdit/getAllImages", { withCredentials: true });
-            console.log(Allimages.data);
-            
-            setimageData(Allimages.data.Allimages);
-          }catch(err) {
+            setimageData(Allimages.data.Allimages || []);
+          } catch (err) {
             console.error("Error fetching images:", err);
-            alert(`Error : ${err.message}`);
+            setimageData([]);
           }
+        } else {
+          setimageData([]);
         }
       }
-
       fetchImages();
     }, [userData]);
 
