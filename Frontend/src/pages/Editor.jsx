@@ -1,10 +1,11 @@
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, { useContext, useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { ImageContextData } from '../context/ImageContext.jsx';
 import "../style/Editor.scss";
 import axios from 'axios';
 import BASE_URL from '../config/api.js';
 
+// axios.defaults.withCredentials = true;
 const Editor = () => {
   const location = useLocation();
   const navigate = useNavigate();
