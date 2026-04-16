@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef, useCallback } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { ImageContextData } from '../context/ImageContext.jsx';
 import "../style/Editor.scss";
@@ -8,7 +8,7 @@ import BASE_URL from '../config/api.js';
 const Editor = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const canvasRef = useRef(null);
+  const imgRef = useRef(null);
   const { imageData, setimageData } = useContext(ImageContextData);
 
   const [brightness, setBrightness] = useState(0);
@@ -25,31 +25,7 @@ const Editor = () => {
     }
   }, [selectedImage, navigate]);
 
-  // Live canvas preview update
-  const updateCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !selectedImage) return;
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-    };
-    let previewSrc = selectedImage.url;
-    if (selectedImage.transformation) {
-      const base = selectedImage.url.split('/v')[0] + '/';
-      const versionRest = selectedImage.url.split('/v')[1];
-      const transforms = selectedImage.transformation.replace(/,/g, '/') + ',w_600,c_limit/';
-      previewSrc = base + transforms + 'v' + versionRest;
-    }
-    img.src = previewSrc;
-  }, [selectedImage]);
-
-  useEffect(() => {
-    updateCanvas();
-  }, [updateCanvas]);
+  // Generate preview and download URLs
 
 // Parse saved transformation to initialize sliders
   useEffect(() => {
@@ -84,25 +60,31 @@ const Editor = () => {
     setTransformation(t.join(','));
   }, [brightness, contrast, saturation, grayscale, sepia]);
 
-  // Live CSS filters on canvas
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    let filter = '';
-    if (brightness) filter += `brightness(${1 + brightness / 100}) `;
-    if (contrast) filter += `contrast(${1 + contrast / 100}) `;
-    if (saturation) filter += `saturate(${1 + saturation / 100}) `;
-    if (grayscale > 0) filter += `grayscale(${grayscale / 100}) `;
-    if (sepia > 0) filter += `sepia(${sepia / 100}) `;
-    canvas.style.filter = filter.trim() || 'none';
-  }, [brightness, contrast, saturation, grayscale, sepia]);
+
+
+  const previewUrl = useMemo(() => {
+    if (!selectedImage?.url || !transformation) return selectedImage.url;
+    const baseUrl = selectedImage.url.split('/v')[0];
+    const versionPart = selectedImage.url.split('/v')[1] || '';
+    const transforms = transformation.replace(/,/g, '/') + ',w_800,c_limit,q_auto:good';
+    return `${baseUrl}/${transforms}/v${versionPart}`;
+  }, [selectedImage?.url, transformation]);
+
+  const downloadUrl = useMemo(() => {
+    if (!selectedImage?.url || !transformation) return selectedImage.url;
+    const baseUrl = selectedImage.url.split('/v')[0];
+    const versionPart = selectedImage.url.split('/v')[1] || '';
+    const transforms = transformation.replace(/,/g, '/') + ',w_1200,c_fill,q_auto:good,fl_attachment';
+    return `${baseUrl}/${transforms}/v${versionPart}`;
+  }, [selectedImage?.url, transformation]);
 
   const handleDownload = () => {
-    const canvas = canvasRef.current;
     const link = document.createElement('a');
-    link.download = 'edited-image.png';
-    link.href = canvas.toDataURL();
+    link.href = downloadUrl;
+    link.download = `edited-${selectedImage.public_id || 'image'}.png`;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   };
 
   const handleSave = async () => {
@@ -134,8 +116,10 @@ const Editor = () => {
       </section>
       <section className="ImageEditing">
         <div className="left">
-          <canvas 
-            ref={canvasRef} 
+          <img 
+            ref={imgRef}
+            src={previewUrl}
+            alt="Preview"
             style={{ 
               maxWidth: '100%', 
               maxHeight: '70vh', 
@@ -143,7 +127,8 @@ const Editor = () => {
               display: 'block',
               borderRadius: '8px',
               boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
-            }} 
+            }}
+            crossOrigin="anonymous"
           />
         </div>
         <div className="right">
@@ -170,7 +155,15 @@ const Editor = () => {
               <input type="range" min="0" max="100" value={sepia} onChange={(e) => setSepia(Number(e.target.value))} />
             </div>
           </div>
-          <button onClick={handleSave}>Save to Cloud</button>
+          {transformation && (
+            <div className="current-transformation">
+              <strong>Current: </strong><code>{transformation}</code>
+            </div>
+          )}
+          <div className="save-download-buttons">
+            <button onClick={handleSave}>💾 Save to Cloud</button>
+            <button onClick={handleDownload}>⬇️ Download Edited Image</button>
+          </div>
         </div>
       </section>
     </div>

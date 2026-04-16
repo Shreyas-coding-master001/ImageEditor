@@ -3,6 +3,7 @@ const multer = require("multer");
 const authUser = require("../middleware/auth.middleware");
 const imageRoute = express.Router();
 const imageController = require("../controllers/image.controllers.js");
+// const imageControlloer = require("../controllers/image.controlloers.js");
 
 //Multer Storage : 
 const storage = multer.memoryStorage();
