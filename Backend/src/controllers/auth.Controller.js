@@ -33,7 +33,8 @@ async function AuthControllerRegister(req, res){
         {id : userCreate._id.toString()}, 
         process.env.JWT_SECRET, 
         {expiresIn : "1d"});
-        
+                // res.cookie("token", token, { httpOnly: true, secure: false, sameSite: 'lax' });
+
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,        // ✅ Required for HTTPS
