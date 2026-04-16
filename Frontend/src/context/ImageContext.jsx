@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { createContext } from 'react'
 import { useState, useEffect } from 'react';
+import BASE_URL from '../config/api.js';
 
 export const ImageContextData = createContext();
 
@@ -12,7 +13,7 @@ const ImageContext = (props) => {
     useEffect(() => {
       const fetchCurrentUser = async () => {
         try {
-          const response = await axios.get("http://localhost:3000/api/auth/me", { withCredentials: true });
+const response = await axios.get(`${BASE_URL}/api/auth/me`, { withCredentials: true });
           setuserData(response.data.user);
         } catch (err) {
           setuserData(null);
@@ -26,7 +27,7 @@ const ImageContext = (props) => {
       async function fetchImages() {
         if (userData) {
           try {
-            const Allimages = await axios.get("http://localhost:3000/api/imageEdit/getAllImages", { withCredentials: true });
+const Allimages = await axios.get(`${BASE_URL}/api/imageEdit/getAllImages`, { withCredentials: true });
             setimageData(Allimages.data.Allimages || []);
           } catch (err) {
             console.error("Error fetching images:", err);

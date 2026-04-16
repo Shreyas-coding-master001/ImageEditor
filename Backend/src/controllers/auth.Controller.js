@@ -33,8 +33,13 @@ async function AuthControllerRegister(req, res){
         {id : userCreate._id.toString()}, 
         process.env.JWT_SECRET, 
         {expiresIn : "1d"});
-        
-        res.cookie("token", token, { httpOnly: true, secure: false, sameSite: 'lax' });
+                // res.cookie("token", token, { httpOnly: true, secure: false, sameSite: 'lax' });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,        // ✅ Required for HTTPS
+            sameSite: "None"     // ✅ Required for cross-origin
+        });
 
         res.status(201).json({
             message : "User Created Successfully",
@@ -79,7 +84,15 @@ async function AuthControllerLogin(req, res){
             process.env.JWT_SECRET,
             {expiresIn : "1d"});
 
+<<<<<<< HEAD
         res.cookie("token", token, { httpOnly: true, secure: false, sameSite: 'lax' });
+=======
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,        // ✅ Required for HTTPS
+            sameSite: "None"     // ✅ Required for cross-origin
+        });
+>>>>>>> a9eb3d4a5c1a4aa431deb7eb2fbf758829398e84
         
         const { password: _, ...user } = isUserExist.toObject();
         res.status(200).json({message : "User logged in successfully", user});

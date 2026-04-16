@@ -15,12 +15,23 @@ app.use(express.json());
 // important for cookies!!
 app.use(cors({
     credentials: true,
-    origin : "http://localhost:5173"
+    origin : [
+        "http://localhost:5173",
+        "https://image-editor-alpha-ochre.vercel.app"
+    ]
 }));
 app.use(cookieParser());
 
 // All Routes here you can know where api's are going👍👍  
 app.use("/api/auth", authRoute);
 app.use("/api/imageEdit", imageRoute);
+
+app.get("/", (req, res)=>{
+    res.status(200).json({
+        message: "Le vivek Ko JSON Me Chahiye thana!!",
+        Data : "Kya Data Ase Free ME du kya",
+        Permission: "CCL ke Madam se persimsson Leke aa"
+    })
+});
 
 module.exports = app;
