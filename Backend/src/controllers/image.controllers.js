@@ -4,7 +4,7 @@ const imageModel = require("../models/image.model");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECREAT
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 const uploadToCLoud = (fileBuffer) => {
@@ -25,22 +25,27 @@ const uploadToCLoud = (fileBuffer) => {
 
 async function imageControllerUploader(req, res){
     try{
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
         const _id = req.user._id;
         const imageCloud = await uploadToCLoud(req.file.buffer);
         const image = await imageModel.create({
             user : _id,
             url : imageCloud.secure_url,
-            public_url : imageCloud.url, 
+            public_url : imageCloud.public_id, 
+            public_id: imageCloud.public_id
         });
-        console.log(image);
+        console.log("Uploaded image:", image);
         res.status(201).json({
-            message : "Image Set Successfully",
+            message : "Image uploaded successfully",
             image
         })
     }catch(err){
+        console.error("Upload error:", err);
         res.status(500).json({ 
-            message : "Uploading Failed",
-            err
+            message : "Upload failed",
+            error: err.message
          });
     }
 }
@@ -92,16 +97,15 @@ async function deleteImage(req, res) {
             return res.status(404).json({ message: "Image not found or not authorized" });
         }
         
-        // Extract public_id from public_url (last part before .extension)
-        const publicId = image.public_url.split('/').pop().split('.')[0];
-        await cloudinary.uploader.destroy(publicId);
+        // Use stored public_id
+        await cloudinary.uploader.destroy(image.public_id);
         
         await imageModel.findByIdAndDelete(id);
         
         res.status(200).json({ message: "Image deleted successfully" });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Delete failed", err: err.message });
+        console.error("Delete error:", err);
+        res.status(500).json({ message: "Delete failed", error: err.message });
     }
 }
 

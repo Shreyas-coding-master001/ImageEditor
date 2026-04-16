@@ -15,7 +15,7 @@ async function getCurrentUser(req, res) {
 async function AuthControllerRegister(req, res){
     const {username, email, password, description} = req.body;
 
-    if(!password && !email && !username) return res.status(400).json({message : "Missing Parameter's in request.body"});
+    if(!password || !email || !username) return res.status(400).json({message : "Missing required parameters: username, email, password"});
 
     try{
         const salt = await bcrypt.genSalt(10);
@@ -23,34 +23,42 @@ async function AuthControllerRegister(req, res){
         
         const isUserAlreadyExisit = await userModel.findOne({email});
 
-        if(isUserAlreadyExisit) return res.status(422).json({message : "User already exist!!"});
+        if(isUserAlreadyExisit) return res.status(422).json({message : "User already exists with this email!!"});
 
         const userCreate = await userModel.create({
             username, email, password : hash, description
         });
         
-        const token = await jwt.sign(
+        const token = jwt.sign(
         {id : userCreate._id.toString()}, 
         process.env.JWT_SECRET, 
         {expiresIn : "1d"});
         
-        res.cookie("token", token);
+        res.cookie("token", token, { httpOnly: true, secure: false, sameSite: 'lax' });
 
         res.status(201).json({
             message : "User Created Successfully",
-            user: userCreate
+            user: { id: userCreate._id, username, email, description }
         });
         
     }catch(err){
+        console.error('Register error:', err);
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: 'Validation failed', error: err.message });
+        }
         res.status(500).json({
-            message : "Pakka bcrpyt yafhir jwt ka problem he 😭😭",
-            error : err
+            message : "Internal server error during registration",
+            error : err.message
         })
     }
 }
 
 async function AuthControllerLogin(req, res){
     const {username, email, password} = req.body;
+
+    if (!password || (!username && !email)) {
+        return res.status(400).json({ message: 'Username/email and password required' });
+    }
 
     try{
         const isUserExist = await userModel.findOne({
@@ -60,26 +68,26 @@ async function AuthControllerLogin(req, res){
             ]
         });
 
-        const hash = isUserExist.password;
+        if(!isUserExist) return res.status(404).json({message : "User does not exist. Please sign up first."});
 
-        const isRightPassword = await bcrypt.compare(password, hash);
+        const isRightPassword = await bcrypt.compare(password, isUserExist.password);
 
-        if(!isUserExist) return res.status(404).json({message : "User Does not Exist's Please Login First"});
+        if(!isRightPassword) return res.status(403).json({ message : "Incorrect password!!"});
 
-        if(!isRightPassword) return res.status(403).json({ message : "Incorrect Password!!"});
-
-        const token = await jwt.sign(
+        const token = jwt.sign(
             {id : isUserExist._id.toString()}, 
             process.env.JWT_SECRET,
-        {expiresIn : "1d"});
+            {expiresIn : "1d"});
 
-        res.cookie("token", token);
+        res.cookie("token", token, { httpOnly: true, secure: false, sameSite: 'lax' });
         
-        res.status(201).json({message : "User Logged in Successfully", user: isUserExist});
+        const { password: _, ...user } = isUserExist.toObject();
+        res.status(200).json({message : "User logged in successfully", user});
     }catch(err){
+        console.error('Login error:', err);
         res.status(500).json({
-            message : "Pakka mongoDB ya fhir bcrypt or jwt ka problem he 😭😭",
-            error : err
+            message : "Internal server error during login",
+            error : err.message
         });
     }
 }

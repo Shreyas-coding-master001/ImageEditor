@@ -4,21 +4,25 @@ const imageSchema = mongoose.Schema({
     user : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "users",
-        required : [true, "UserID Required, So don,t Receive the ObjectID"]
+        required : [true, "User ID required"]
     },
     url : {
         type : String,
-        required : [true, "URL of Image was not Found"]
+        required : [true, "Image URL required"]
+    },
+    public_id : {
+        type : String,
+        required : [true, "Cloudinary public_id required"]
     },
     public_url : {
         type : String,
-        required : [true, "Public id to delete and update dynamically"]
+        required : [true, "Public URL required"]
     },
     transformation : {
         type : String,
         default : ""
     }
-});
+}, { timestamps: true });
 
 
 module.exports = mongoose.model("images", imageSchema);
