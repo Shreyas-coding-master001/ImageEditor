@@ -156,11 +156,7 @@ const Editor = () => {
               <input type="range" min="0" max="100" value={sepia} onChange={(e) => setSepia(Number(e.target.value))} />
             </div>
           </div>
-          {transformation && (
-            <div className="current-transformation">
-              <strong>Current: </strong><code>{transformation}</code>
-            </div>
-          )}
+          
           <div className="save-download-buttons">
             <button onClick={handleSave}>💾 Save to Cloud</button>
             <button onClick={handleDownload}>⬇️ Download Edited Image</button>

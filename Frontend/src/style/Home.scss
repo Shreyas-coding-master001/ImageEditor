@@ -3,6 +3,60 @@
     justify-content: space-between;
     align-items: center;
     text-align: center;
+
+    .user-info{
+      position: fixed;  
+      bottom: 2%;
+      right:  5%;
+      color: #8e8e8e;
+      mix-blend-mode: difference;
+      margin-left: auto;
+      font-size: bold;
+    }
+
+}
+
+@media (max-width: 480px) {
+  .top {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+
+      h2 {
+        font-size: 5rem;
+      }
+
+      .AllButton {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+
+        label, button {
+          flex: 1;
+          min-width: 200px;
+          padding: 0.75rem 1rem;
+          min-height: 44px;
+          text-align: center;
+        }
+        .file-preview {
+          width: 100%;
+          text-align: center;
+
+          .preview-img {
+            max-width: 150px;
+            max-height: 150px;
+          }
+        }
+
+        .auth-buttons {
+          flex-direction: row;
+          gap: 0.5rem;
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
 }
 
 .top h2{
@@ -148,10 +202,68 @@
         &:hover .delete-btn {
           opacity: 1;
         }
+
+        // Mobile tap effect
+        @media (hover: none) {
+          &:active {
+            transform: scale(0.98);
+          }
+
+          .delete-btn {
+            opacity: 1;
+          }
+        }
       }
     }
 
   }
-  
-  
+
+  // Mobile responsiveness
+  @media (max-width: 480px) {
+    .bottom {
+      padding: 0.5rem;
+
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.75rem;
+
+        .image-card {
+          padding: 0.75rem;
+
+          img {
+            height: 120px;
+          }
+
+          .delete-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .bottom-top {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+
+        h3 {
+          font-size: 1.25rem;
+        }
+
+        h4 {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    .top .AllButton {
+      width: 40%;
+    }
+
+    .grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+  }
 }

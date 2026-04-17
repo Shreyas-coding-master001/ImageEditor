@@ -12,6 +12,10 @@ html,body,#root{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#root{
-  padding: 2rem;
+#root {
+  padding: 1rem;
+
+  @media (min-width: 769px) {
+    padding: 2rem;
+  }
 }

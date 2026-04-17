@@ -116,7 +116,7 @@ const Home = (props) => {
         <div className="top">
           <h2>Welcome To Image Editor</h2>
           {userData && Object.keys(userData).length > 0 && (
-            <div className="user-info" style={{marginLeft: 'auto', fontWeight: 'bold'}}>
+            <div className="user-info">
               Welcome, {userData.email}!
             </div>
           )}
